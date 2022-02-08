@@ -21,6 +21,36 @@ import bodyPortableText from './objects/bodyPortableText'
 import eventReference from './objects/eventReference'
 import personReference from './objects/personReference'
 
+const supportedLanguages = [
+  { id: 'en', title: 'English', isDefault: true },
+  { id: 'no', title: 'Norwegian' },
+  { id: 'fr', title: 'French' }
+]
+const baseLanguage = supportedLanguages.find(l => l.isDefault)
+
+const localeString = {
+  title: 'Localized string',
+  name: 'localeString',
+  type: 'object',
+  // Fieldsets can be used to group object fields.
+  // Here we omit a fieldset for the "default language",
+  // making it stand out as the main field.
+  fieldsets: [
+    {
+      title: 'Translations',
+      name: 'translations',
+      options: { collapsible: true }
+    }
+  ],
+  // Dynamically define one field per language
+  fields: supportedLanguages.map(lang => ({
+    title: lang.title,
+    name: lang.id,
+    type: 'string',
+    fieldset: lang.isDefault ? null : 'translations'
+  }))
+}
+
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
   // We name our schema
@@ -30,6 +60,7 @@ export default createSchema({
   types: schemaTypes.concat([
     // The following are document types which will appear
     // in the studio.
+    localeString,
     codeOfConduct,
     eventInformation,
     person,
